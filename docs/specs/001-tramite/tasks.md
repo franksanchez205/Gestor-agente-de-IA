@@ -4,7 +4,7 @@
 - [x] T2: Memoria personal del agente.
 - [x] T3: Orquestador de acciones.
 - [x] T4: Motor de razonamiento (LLM + RAG).
-- [ ] T5: Capa de acción — portales (sandbox).
+- [x] T5: Capa de acción — portales (sandbox).
 - [ ] T6: Capa de acción — pagos (sandbox).
 - [ ] T7: Canal WhatsApp (webhook).
 - [ ] T8: Canal voz (STT/TTS).

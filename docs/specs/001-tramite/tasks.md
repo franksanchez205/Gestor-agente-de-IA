@@ -1,6 +1,6 @@
 # Tasks 001
 
-- [ ] T1: Modelos de datos y migraciones (User, Document, Case).
+- [x] T1: Modelos de datos y migraciones (User, Document, Case).
 - [ ] T2: Memoria personal del agente.
 - [ ] T3: Orquestador de acciones.
 - [ ] T4: Motor de razonamiento (LLM + RAG).

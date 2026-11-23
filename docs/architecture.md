@@ -22,7 +22,7 @@
 - [x] T5: Capa de acción — portales.
 - [x] T6: Capa de acción — pagos (sandbox).
 - [x] T7: Canal WhatsApp (webhook).
-- [ ] T8: Canal voz (STT/TTS).
+- [x] T8: Canal voz (STT/TTS).
 - [ ] T9: Notificaciones proactivas.
 - [ ] T10: Tests E2E.
 - [ ] T11: Verificar criterios de aceptación.

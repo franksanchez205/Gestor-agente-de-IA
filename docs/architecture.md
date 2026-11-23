@@ -23,7 +23,7 @@
 - [x] T6: Capa de acción — pagos (sandbox).
 - [x] T7: Canal WhatsApp (webhook).
 - [x] T8: Canal voz (STT/TTS).
-- [ ] T9: Notificaciones proactivas.
+- [x] T9: Notificaciones proactivas.
 - [ ] T10: Tests E2E.
 - [ ] T11: Verificar criterios de aceptación.
 

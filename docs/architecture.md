@@ -28,3 +28,9 @@
 - [x] T11: Verificar criterios de aceptación.
 
 Ver `docs/specs/001-tramite/tasks.md` para el detalle.
+
+## Specs
+
+- `docs/specs/000-setup/` — setup inicial (completada).
+- `docs/specs/001-tramite/` — MVP trámite (completada).
+- `docs/specs/002-tramites-expansion/` — V2: más trámites + segundo país (en progreso).

@@ -1,0 +1,1 @@
+"""Capa de acción (invisible para el cliente): portales, gestores, pagos, citas."""

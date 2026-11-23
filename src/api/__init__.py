@@ -1,0 +1,1 @@
+"""Canales de interacción: WhatsApp, voz, app."""

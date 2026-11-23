@@ -1,0 +1,1 @@
+"""Capa de datos: modelos, BD, credenciales verificables."""

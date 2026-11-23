@@ -1,7 +1,7 @@
 """Modelos de datos (SQLAlchemy)."""
 
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Float, Boolean, JSON, ForeignKey
+from sqlalchemy import Column, String, DateTime, Float, Boolean, JSON, ForeignKey, Integer
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -43,3 +43,15 @@ class Case(Base):
     completed_at = Column(DateTime, nullable=True)
     gestor_id = Column(String, nullable=True)
     user = relationship("User", back_populates="cases")
+
+
+class Gestor(Base):
+    __tablename__ = "gestores"
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    country = Column(String, nullable=False)
+    specialties = Column(JSON, nullable=True)
+    verified = Column(Boolean, default=False)
+    reputation_score = Column(Float, default=0.0)
+    cases_completed = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)

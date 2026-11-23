@@ -1,6 +1,6 @@
 # Tareas: Puente MVP
 
-- [ ] T1: Inicializar proyecto (estructura de carpetas, Docker, pyproject.toml)
+- [x] T1: Inicializar proyecto (estructura de carpetas, Docker, pyproject.toml)
   - Acceptance: `docker compose up` levanta BD y Redis sin errores
   - Verify: `docker compose ps` muestra servicios healthy
   - Files: docker-compose.yml, pyproject.toml, .env.example

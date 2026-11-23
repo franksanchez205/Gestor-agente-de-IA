@@ -24,7 +24,7 @@
 - [x] T7: Canal WhatsApp (webhook).
 - [x] T8: Canal voz (STT/TTS).
 - [x] T9: Notificaciones proactivas.
-- [ ] T10: Tests E2E.
-- [ ] T11: Verificar criterios de aceptación.
+- [x] T10: Tests E2E del flujo completo.
+- [x] T11: Verificar criterios de aceptación.
 
 Ver `docs/specs/001-tramite/tasks.md` para el detalle.

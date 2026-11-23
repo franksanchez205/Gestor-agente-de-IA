@@ -1,0 +1,1 @@
+"""Núcleo del agente: memoria, personalidad, orquestador, razonamiento."""

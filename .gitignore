@@ -37,3 +37,6 @@ npm-debug.log*
 # Temporary
 tmp/
 temp/
+# Coverage
+.coverage
+htmlcov/

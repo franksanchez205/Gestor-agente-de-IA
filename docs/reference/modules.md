@@ -1,0 +1,82 @@
+---
+type: reference
+audience: developer
+---
+
+# Referencia de módulos
+
+## src/agent/memory.py
+
+Memoria personal del agente (Jarvis-style).
+
+- `UserProfile`: perfil del cliente (nombre, nacionalidad, países, idioma, tono, canal, horarios de notificación).
+- `Document`: documento del expediente (tipo, emisor, fechas, credencial verificable).
+- `CaseHistory`: historial de trámites (id, trámite, país, fechas, resultado, gestor).
+- `PersonalMemory`: memoria persistente con métodos `add_document`, `expiring_soon`, `to_prompt_context`.
+
+## src/agent/orchestrator.py
+
+Orquestador de acciones del agente.
+
+- `PlanStep`: paso del plan (id, descripción, acción, requiere confirmación, estado, resultado).
+- `TramitePlan`: plan de trámite (id, trámite, país, pasos, `next_pending`, `is_complete`).
+- `Orchestrator`: coordina la ejecución, pide confirmación en puntos críticos, marca done/failed.
+
+## src/agent/reasoning.py
+
+Motor de razonamiento (LLM + RAG).
+
+- `ReasoningEngine.understand(message, memory_context)`: consulta la KB (RAG), construye prompt con memoria + fuentes, llama al LLM, retorna `ReasoningResult`.
+- `ReasoningResult`: intent, country, tramite, answer, sources, needs_confirmation.
+
+## src/agent/notifications.py
+
+Notificaciones proactivas.
+
+- `NotificationService.check_expiring_documents(memory, days_ahead)`: avisa documentos por vencer.
+- `NotificationService.remind_appointment(appointment, hours_before)`: recordatorio de cita.
+
+## src/agent/personality.py
+
+Personalidad configurable del agente.
+
+- `Personality`: nombre, tono, idioma, dialecto, nivel de detalle, proactividad. Método `system_prompt()`.
+
+## src/action/portals.py
+
+Integración con portales oficiales (APIs/RPA).
+
+- `PortalClient`: `submit_form(form_data, documents)` → `PortalResult`; `check_status(tramite_number)` → str.
+- `PortalResult`: success, tramite_number, message, evidence.
+
+## src/action/payments.py
+
+Pagos de tasas oficiales (tokenizados).
+
+- `PaymentClient`: `pay_fee(amount, currency, tramite_number)` → `PaymentResult`.
+
+## src/action/appointments.py
+
+Agenda de citas y recordatorios.
+
+- `AppointmentService`: `schedule()`, `reschedule()`.
+
+## src/action/gestores.py
+
+Marketplace de gestores verificados.
+
+- `GestorMarketplace`: `find_best()`, `assign()`, `release_payment()`.
+
+## src/data/models.py
+
+Modelos SQLAlchemy: `User`, `Document`, `Case`.
+
+## src/api/whatsapp.py / voice.py
+
+Canales de interacción: webhook de WhatsApp, STT/TTS de voz.
+
+## src/knowledge/base.py
+
+Base de conocimiento (RAG) por país.
+
+- `KnowledgeBase`: `search(query, country, top_k)`, `ingest(chunks)`.

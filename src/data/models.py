@@ -35,6 +35,7 @@ class Case(Base):
     __tablename__ = "cases"
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=True)
     tramite = Column(String, nullable=False)
     country = Column(String, nullable=False)
     status = Column(String, default="pending")

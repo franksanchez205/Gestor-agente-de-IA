@@ -69,7 +69,7 @@ Marketplace de gestores verificados.
 
 ## src/data/models.py
 
-Modelos SQLAlchemy: `User`, `Document`, `Case`.
+Modelos SQLAlchemy: `User`, `Document`, `Case`. `Case` incluye `title` (V2) para identificar el trámite.
 
 ## src/api/whatsapp.py / voice.py
 

@@ -1,0 +1,1 @@
+"""Puente — Agente de IA para la vida administrativa migratoria."""

@@ -79,4 +79,13 @@ Canales de interacción: webhook de WhatsApp, STT/TTS de voz.
 
 Base de conocimiento (RAG) por país.
 
-- `KnowledgeBase`: `search(query, country, top_k)`, `ingest(chunks)`.
+- `KnowledgeBase`: `search(query, country, top_k)`, `ingest(chunks)`, `countries`, `has_country`.
+
+## frontend/
+
+App web React + Vite + Tailwind (puerto 5173).
+
+- `src/App.tsx`: layout principal (sidebar + chat). Diseño distintivo: paleta ink/panel/accent, tipografía Space Grotesk + JetBrains Mono, animaciones framer-motion.
+- `src/main.tsx`: entry point.
+- `src/index.css`: estilos base + radial gradient.
+- Componentes: chat (mensajes, input, typing), sidebar (expediente, notificaciones), botón de voz.

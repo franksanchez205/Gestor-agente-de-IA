@@ -1,17 +1,18 @@
 # Arquitectura
 
-- /src: código fuente (Python)
+- /src: código fuente (Python, backend FastAPI)
   - /src/agent: núcleo del agente (memoria, personalidad, orquestador, razonamiento, notificaciones)
   - /src/action: capa de acción invisible (portales, gestores, pagos, citas)
   - /src/data: modelos, BD, credenciales verificables
   - /src/api: canales de interacción (WhatsApp, voz)
   - /src/knowledge: base de normativa migratoria por país (RAG)
   - /src/main.py: punto de entrada FastAPI (puerto 8000)
-- /docs/specs: specs numeradas (000-setup, 001-..., ...)
+- /frontend: app web React + Vite + Tailwind (puerto 5173). Diseño distintivo estilo Jarvis.
+- /docs/specs: specs numeradas (000-setup, 001-..., 002-..., 003-frontend)
 - /tests: pruebas unitarias e integración
-- Docker Compose: PostgreSQL (5432) + Redis (6379) + app (8000)
+- Docker Compose: PostgreSQL (5433) + Redis (6379) + app (8000)
 - El cliente solo habla con el agente (WhatsApp/voz/app). Portales, gestores y sistemas quedan invisibles detrás.
-- El frontend (futuro) llama a http://localhost:8000/api (CORS habilitado).
+- El frontend llama a http://localhost:8000 (proxy en Vite).
 
 ## Estado de implementación (spec 001)
 
@@ -34,3 +35,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/000-setup/` — setup inicial (completada).
 - `docs/specs/001-tramite/` — MVP trámite (completada).
 - `docs/specs/002-tramites-expansion/` — V2: más trámites + segundo país (en progreso).
+- `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (T1-T7 done, T8 pendiente).

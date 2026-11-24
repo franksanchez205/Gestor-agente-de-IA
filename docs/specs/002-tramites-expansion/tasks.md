@@ -6,6 +6,6 @@
 - [x] T4: Extender orquestador para múltiples planes activos.
 - [x] T5: Extender RAG con normativa del segundo país.
 - [x] T6: Extender portales para el segundo país.
-- [ ] T7: Tests unitarios (marketplace, multi-trámite).
+- [x] T7: Tests unitarios (marketplace, multi-trámite).
 - [ ] T8: Tests E2E (flujo en segundo país).
 - [ ] T9: Verificar criterios de aceptación.

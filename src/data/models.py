@@ -11,9 +11,11 @@ class User(Base):
     __tablename__ = "users"
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
+    email = Column(String, nullable=True, unique=True)
     nationality = Column(String, nullable=False)
     preferred_language = Column(String, default="es")
     preferred_channel = Column(String, default="whatsapp")
+    password_hash = Column(String, nullable=True)
     org_id = Column(String, ForeignKey("organizations.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     documents = relationship("Document", back_populates="user")

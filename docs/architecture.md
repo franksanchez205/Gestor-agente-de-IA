@@ -39,4 +39,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/004-verifiable-credentials/` — Credenciales verificables transfronterizas (completada).
 - `docs/specs/005-b2b-ong/` — B2B: ONG y organismos (completada).
 - `docs/specs/006-llm-integration/` — Integración LLM real (completada).
-- `docs/specs/007-auth-users/` — Autenticación y usuarios (en progreso).
+- `docs/specs/007-auth-users/` — Autenticación y usuarios (completada).

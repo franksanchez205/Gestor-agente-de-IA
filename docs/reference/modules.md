@@ -94,6 +94,22 @@ API de credenciales verificables.
 
 API B2B para ONG y organismos.
 
+## src/api/auth.py
+
+API de autenticación.
+
+- `POST /api/auth/register` — registrar usuario.
+- `POST /api/auth/login` — login (retorna JWT).
+- `GET /api/auth/me` — usuario actual (protegido).
+
+## src/auth/
+
+Módulo de autenticación.
+
+- `password.py`: `hash_password`, `verify_password` (bcrypt).
+- `jwt.py`: `create_access_token`, `decode_access_token` (JWT HS256).
+- `deps.py`: `get_current_user` (FastAPI dependency).
+
 - `POST /api/orgs/register` — registrar ONG.
 - `GET /api/orgs/{id}` — obtener ONG.
 - `POST /api/orgs/{id}/cupos` — crear cupo.

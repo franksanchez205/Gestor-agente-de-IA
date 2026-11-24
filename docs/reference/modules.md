@@ -81,6 +81,12 @@ Canales de interacción: webhook de WhatsApp, STT/TTS de voz.
 
 API de expediente digital del cliente.
 
+## src/api/chat.py
+
+API de chat con el agente (integración LLM real).
+
+- `POST /api/chat/` — enviar mensaje al agente, retorna respuesta del LLM + fuentes (RAG).
+
 - `GET /api/expediente/` → documentos y notificaciones.
 
 ## src/api/credentials.py

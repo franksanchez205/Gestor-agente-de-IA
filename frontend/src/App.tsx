@@ -53,17 +53,14 @@ export default function App() {
     setInput("");
     setTyping(true);
     try {
-      const res = await fetch("/whatsapp/webhook", {
+      const res = await fetch("/api/chat/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: t }),
       });
       const data = await res.json();
       await new Promise((r) => setTimeout(r, 600));
-      const reply =
-        data.status === "ok"
-          ? "Recibí tu solicitud. Estoy preparando el plan del trámite; te confirmo antes de enviar cualquier cosa. ¿Autorizás que gestione por vos?"
-          : "Hubo un problema. Intentá de nuevo.";
+      const reply = data.answer || "Hubo un problema. Intentá de nuevo.";
       setMsgs((m) => [...m, { role: "agent", text: reply, ts: Date.now() }]);
       speak(reply);
     } finally {

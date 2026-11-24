@@ -8,9 +8,11 @@ class FakeLLM:
     def __init__(self, response: str):
         self.response = response
         self.last_prompt = None
+        self.last_system = None
 
-    async def complete(self, prompt: str) -> str:
+    async def complete(self, prompt: str, system: str | None = None, max_tokens: int = 1024) -> str:
         self.last_prompt = prompt
+        self.last_system = system
         return self.response
 
 
@@ -18,9 +20,11 @@ class FakeKB:
     def __init__(self, sources: list[str]):
         self.sources = sources
         self.last_query = None
+        self.last_country = None
 
-    async def search(self, query: str) -> list[str]:
+    async def search(self, query: str, country: str | None = None, top_k: int = 5) -> list[str]:
         self.last_query = query
+        self.last_country = country
         return self.sources
 
 

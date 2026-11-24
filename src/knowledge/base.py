@@ -22,12 +22,11 @@ class KnowledgeBase:
         return sorted(self._countries)
 
     async def search(self, query: str, country: str | None = None, top_k: int = 5) -> list[str]:
-        # Stub: búsqueda semántica en la base de normativa
-        # Filtra por país si se especifica
-        return []
+        return self.store.search(query, top_k=top_k, country=country)
 
     async def ingest(self, chunks: list[KnowledgeChunk]) -> None:
-        # Stub: ingestar normativa actualizada
+        from src.knowledge.ingest import ingest_normativa
+        ingest_normativa(self.store, chunks)
         for chunk in chunks:
             self._countries.add(chunk.country)
 

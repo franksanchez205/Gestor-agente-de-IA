@@ -18,17 +18,18 @@ class ReasoningResult:
 
 
 class ReasoningEngine:
-    def __init__(self, llm_client, knowledge_base):
+    def __init__(self, llm_client, knowledge_base, system_prompt: str | None = None):
         self.llm = llm_client
         self.kb = knowledge_base
+        self.system_prompt = system_prompt
 
-    async def understand(self, user_message: str, memory_context: str) -> ReasoningResult:
+    async def understand(self, user_message: str, memory_context: str, country: str | None = None) -> ReasoningResult:
         # 1. Recuperar normativa relevante del RAG
-        sources = await self.kb.search(user_message)
+        sources = await self.kb.search(user_message, country=country)
         # 2. Construir prompt con memoria + fuentes
         prompt = self._build_prompt(user_message, memory_context, sources)
         # 3. Llamar al LLM
-        raw = await self.llm.complete(prompt)
+        raw = await self.llm.complete(prompt, system=self.system_prompt)
         return self._parse(raw, sources)
 
     def _build_prompt(self, msg: str, memory: str, sources: list[str]) -> str:
@@ -37,7 +38,7 @@ class ReasoningEngine:
             "Responde en lenguaje sencillo, sin jerga. Si el cliente pide realizar un "
             "trámite, planifica los pasos y pide confirmación antes de actuar.\n\n"
             f"MEMORIA DEL CLIENTE:\n{memory}\n\n"
-            f"NORMATIVA RELEVANTE:\n{chr(10).join(sources)}\n\n"
+            f"NORMATIVA RELEVANTE:\n{chr(10).join(sources) if sources else 'Sin resultados'}\n\n"
             f"MENSAJE DEL CLIENTE:\n{msg}\n"
         )
 

@@ -5,7 +5,22 @@ from src.knowledge.base import KnowledgeBase, KnowledgeChunk
 
 
 class FakeStore:
-    pass
+    def __init__(self):
+        self._docs = []
+
+    def add(self, text, metadata=None):
+        self._docs.append({"text": text, "metadata": metadata or {}})
+
+    def search(self, query, top_k=5, country=None):
+        results = []
+        for doc in self._docs:
+            if country and doc["metadata"].get("country") != country:
+                continue
+            if query.lower() in doc["text"].lower():
+                results.append(doc["text"])
+            if len(results) >= top_k:
+                break
+        return results
 
 
 @pytest.mark.asyncio

@@ -100,6 +100,24 @@ API B2B para ONG y organismos.
 - `GET /api/orgs/{id}/report` — reporte de uso.
 - `GET /api/orgs/cupos/{id}` — obtener cupo.
 
+## src/agent/llm_client.py
+
+Cliente LLM unificado (OpenAI/Anthropic).
+
+- `LLMClient(provider, model, api_key)`: `complete(prompt, system, max_tokens)` → str. Soporta OpenAI y Anthropic.
+
+## src/knowledge/vector_store.py
+
+Vector store para RAG (in-memory, extensible a pgvector/ChromaDB).
+
+- `InMemoryVectorStore`: `add(text, metadata)`, `search(query, top_k, country)`, `count()`.
+
+## src/knowledge/ingest.py
+
+Ingesta de normativa migratoria por país.
+
+- `ingest_normativa(store, chunks)` → int.
+
 ## src/knowledge/base.py
 
 Base de conocimiento (RAG) por país.

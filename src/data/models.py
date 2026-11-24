@@ -14,6 +14,7 @@ class User(Base):
     nationality = Column(String, nullable=False)
     preferred_language = Column(String, default="es")
     preferred_channel = Column(String, default="whatsapp")
+    org_id = Column(String, ForeignKey("organizations.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     documents = relationship("Document", back_populates="user")
     cases = relationship("Case", back_populates="user")
@@ -78,3 +79,25 @@ class Credential(Base):
     issued_at = Column(DateTime, default=datetime.utcnow)
     expires_at = Column(DateTime, nullable=True)
     revoked = Column(Boolean, default=False)
+
+
+class Organization(Base):
+    __tablename__ = "organizations"
+    id = Column(String, primary_key=True)
+    name = Column(String, nullable=False)
+    org_type = Column(String, nullable=False)  # ong | organism
+    contact_email = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    cupos = relationship("Cupo", back_populates="organization")
+
+
+class Cupo(Base):
+    __tablename__ = "cupos"
+    id = Column(String, primary_key=True)
+    org_id = Column(String, ForeignKey("organizations.id"), nullable=False)
+    beneficiary_email = Column(String, nullable=True)
+    assigned_at = Column(DateTime, nullable=True)
+    used = Column(Boolean, default=False)
+    used_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    organization = relationship("Organization", back_populates="cupos")

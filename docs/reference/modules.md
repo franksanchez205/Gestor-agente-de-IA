@@ -85,6 +85,14 @@ Base de conocimiento (RAG) por país.
 
 Credenciales verificables (W3C Verifiable Credentials, JWT-VC).
 
+- `issue_vc`, `verify_vc`, `is_vc_valid`, `VCError`.
+
+## src/credentials/verifier.py
+
+Verificador de credenciales con validaciones adicionales.
+
+- `CredentialVerifier`: `verify(token, expected_subject)`, `is_valid(token, expected_subject)`. Valida issuer y subject esperados.
+
 - `issue_vc(subject_did, claims, issuer_did, secret_key, expires_in_days, algorithm)` → JWT string.
 - `verify_vc(token, secret_key, algorithms)` → payload dict o raise VCError.
 - `is_vc_valid(token, secret_key)` → bool.

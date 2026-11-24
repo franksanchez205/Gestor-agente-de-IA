@@ -7,4 +7,4 @@
 - [x] T5: Botón de voz (toggle).
 - [x] T6: Animaciones (framer-motion).
 - [x] T7: Build de producción y verificación.
-- [ ] T8: Integración real con backend (V2).
+- [x] T8: Integración real con backend (V2).

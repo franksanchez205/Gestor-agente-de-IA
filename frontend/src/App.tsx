@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Msg = { role: "user" | "agent"; text: string; ts: number };
+type Doc = { doc_type: string; status: string; expires: string | null };
+type Notif = { text: string };
 
 const seed: Msg[] = [
   { role: "agent", text: "Hola, soy Puente. Tu agente personal para trámites migratorios. ¿En qué te ayudo hoy?", ts: Date.now() },
@@ -12,11 +14,24 @@ export default function App() {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [listening, setListening] = useState(false);
+  const [docs, setDocs] = useState<Doc[]>([]);
+  const [notifs, setNotifs] = useState<Notif[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, typing]);
+
+  // Cargar expediente dinámico del backend
+  useEffect(() => {
+    fetch("/api/expediente/")
+      .then((r) => r.json())
+      .then((data) => {
+        setDocs(data.documents || []);
+        setNotifs(data.notifications || []);
+      })
+      .catch(() => {});
+  }, []);
 
   async function send(text: string) {
     const t = text.trim();
@@ -51,12 +66,17 @@ export default function App() {
   function toggleVoice() {
     setListening((v) => !v);
     if (!listening) {
-      // Placeholder: integración con Web Speech API
       setTimeout(() => {
         setListening(false);
         send("Necesito renovar mi permiso de residencia");
       }, 1200);
     }
+  }
+
+  function docColor(status: string) {
+    if (status.startsWith("vence")) return "text-warn";
+    if (status === "válido" || status === "apostillado") return "text-ok";
+    return "text-slate-400";
   }
 
   return (
@@ -78,15 +98,22 @@ export default function App() {
         <div className="px-6 py-4">
           <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Expediente</div>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-slate-400">Pasaporte</span><span className="font-mono text-ok">válido</span></div>
-            <div className="flex justify-between"><span className="text-slate-400">Permiso residencia</span><span className="font-mono text-warn">vence 30d</span></div>
-            <div className="flex justify-between"><span className="text-slate-400">Título</span><span className="font-mono text-ok">apostillado</span></div>
+            {docs.length === 0 && <div className="text-slate-500 text-xs">Cargando…</div>}
+            {docs.map((d, i) => (
+              <div key={i} className="flex justify-between">
+                <span className="text-slate-400 capitalize">{d.doc_type}</span>
+                <span className={`font-mono ${docColor(d.status)}`}>{d.status}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="px-6 py-4 border-t border-line">
           <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Notificaciones</div>
-          <div className="text-sm text-slate-300">Tu permiso de residencia vence en 30 días. ¿Gestiono la renovación?</div>
+          {notifs.length === 0 && <div className="text-slate-500 text-xs">Sin notificaciones</div>}
+          {notifs.map((n, i) => (
+            <div key={i} className="text-sm text-slate-300">{n.text}</div>
+          ))}
         </div>
 
         <div className="mt-auto px-6 py-4 border-t border-line text-xs text-slate-500 font-mono">

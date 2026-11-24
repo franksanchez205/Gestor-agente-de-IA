@@ -35,4 +35,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/000-setup/` — setup inicial (completada).
 - `docs/specs/001-tramite/` — MVP trámite (completada).
 - `docs/specs/002-tramites-expansion/` — V2: más trámites + segundo país (completada).
-- `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (T1-T7 done, T8 pendiente).
+- `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (completada).

@@ -97,6 +97,12 @@ Verificador de credenciales con validaciones adicionales.
 
 Control de acceso a credenciales verificables.
 
+## src/credentials/data_export.py
+
+Exportación y eliminación de datos del usuario (soberanía de datos).
+
+- `DataExporter`: `export_user_data(user_id)` → dict con profile, documents, cases, credentials. `delete_user_data(user_id)` → bool.
+
 - `CredentialAccess`: `share(credential_id, expires_in_minutes)` → token JWT de acceso temporal. `revoke_share(share_token)` → bool. `check_access(share_token)` → bool. `revoke_credential(credential_id, revoked_set)`.
 
 - `issue_vc(subject_did, claims, issuer_did, secret_key, expires_in_days, algorithm)` → JWT string.

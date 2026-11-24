@@ -36,4 +36,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/001-tramite/` — MVP trámite (completada).
 - `docs/specs/002-tramites-expansion/` — V2: más trámites + segundo país (completada).
 - `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (completada).
-- `docs/specs/004-verifiable-credentials/` — Credenciales verificables transfronterizas (en progreso).
+- `docs/specs/004-verifiable-credentials/` — Credenciales verificables transfronterizas (completada).

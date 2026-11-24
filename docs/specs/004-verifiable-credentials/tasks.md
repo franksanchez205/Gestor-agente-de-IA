@@ -5,6 +5,6 @@
 - [x] T3: Modelo Credential + migración.
 - [x] T4: Control de acceso (compartir/revocar).
 - [x] T5: Exportación y eliminación de datos del usuario.
-- [ ] T6: Tests unitarios (emisión, verificación, revocación).
-- [ ] T7: Tests E2E (verificación cross-país simulada).
-- [ ] T8: Verificar criterios de aceptación.
+- [x] T6: Tests unitarios (emisión, verificación, revocación).
+- [x] T7: Tests E2E (verificación cross-país simulada).
+- [x] T8: Verificar criterios de aceptación.

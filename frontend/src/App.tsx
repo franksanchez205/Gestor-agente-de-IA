@@ -16,6 +16,9 @@ export default function App() {
   const [listening, setListening] = useState(false);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [notifs, setNotifs] = useState<Notif[]>([]);
+  const [credential, setCredential] = useState<string>("");
+  const [verifying, setVerifying] = useState(false);
+  const [verifyResult, setVerifyResult] = useState<string>("");
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,6 +76,29 @@ export default function App() {
     }
   }
 
+  async function issueCredential() {
+    const res = await fetch("/api/credentials/issue", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subject_did: "did:example:user1", doc_type: "passport", issued_by: "AR" }),
+    });
+    const data = await res.json();
+    setCredential(data.token || "");
+  }
+
+  async function verifyCredential() {
+    if (!credential) return;
+    setVerifying(true);
+    const res = await fetch("/api/credentials/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: credential }),
+    });
+    const data = await res.json();
+    setVerifyResult(data.valid ? "Válida ✓" : `Inválida: ${data.error}`);
+    setVerifying(false);
+  }
+
   function docColor(status: string) {
     if (status.startsWith("vence")) return "text-warn";
     if (status === "válido" || status === "apostillado") return "text-ok";
@@ -114,6 +140,29 @@ export default function App() {
           {notifs.map((n, i) => (
             <div key={i} className="text-sm text-slate-300">{n.text}</div>
           ))}
+        </div>
+
+        <div className="px-6 py-4 border-t border-line">
+          <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Credenciales verificables</div>
+          <button
+            onClick={issueCredential}
+            className="w-full text-xs px-3 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition mb-2"
+          >
+            Emitir credencial (pasaporte)
+          </button>
+          {credential && (
+            <div className="space-y-2">
+              <div className="text-xs text-slate-400 break-all font-mono bg-ink/50 p-2 rounded">{credential.slice(0, 60)}…</div>
+              <button
+                onClick={verifyCredential}
+                disabled={verifying}
+                className="w-full text-xs px-3 py-2 rounded-lg bg-ok/20 text-ok hover:bg-ok/30 transition"
+              >
+                {verifying ? "Verificando…" : "Verificar credencial"}
+              </button>
+              {verifyResult && <div className="text-xs text-slate-300">{verifyResult}</div>}
+            </div>
+          )}
         </div>
 
         <div className="mt-auto px-6 py-4 border-t border-line text-xs text-slate-500 font-mono">

@@ -43,7 +43,7 @@ class TramitePlan:
 
     @property
     def is_complete(self) -> bool:
-        return all(s.status == StepStatus.DONE for s in self.steps)
+        return len(self.steps) > 0 and all(s.status == StepStatus.DONE for s in self.steps)
 
 
 class Orchestrator:
@@ -72,3 +72,33 @@ class Orchestrator:
                 step.result = {"error": str(exc)}
                 break
         return plan
+
+
+class PlanManager:
+    """Gestiona múltiples planes activos por usuario (V2)."""
+
+    def __init__(self):
+        self._plans: dict[str, list[TramitePlan]] = {}
+
+    def add_plan(self, user_id: str, plan: TramitePlan) -> None:
+        self._plans.setdefault(user_id, []).append(plan)
+
+    def get_plans(self, user_id: str) -> list[TramitePlan]:
+        return self._plans.get(user_id, [])
+
+    def get_active_plans(self, user_id: str) -> list[TramitePlan]:
+        return [p for p in self.get_plans(user_id) if not p.is_complete]
+
+    def get_plan(self, user_id: str, plan_id: str) -> TramitePlan | None:
+        for p in self.get_plans(user_id):
+            if p.plan_id == plan_id:
+                return p
+        return None
+
+    def remove_plan(self, user_id: str, plan_id: str) -> bool:
+        plans = self._plans.get(user_id, [])
+        for i, p in enumerate(plans):
+            if p.plan_id == plan_id:
+                del plans[i]
+                return True
+        return False

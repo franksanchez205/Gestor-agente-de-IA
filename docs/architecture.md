@@ -38,3 +38,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (completada).
 - `docs/specs/004-verifiable-credentials/` — Credenciales verificables transfronterizas (completada).
 - `docs/specs/005-b2b-ong/` — B2B: ONG y organismos (completada).
+- `docs/specs/006-llm-integration/` — Integración LLM real (en progreso).

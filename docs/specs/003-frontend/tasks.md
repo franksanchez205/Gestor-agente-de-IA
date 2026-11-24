@@ -8,3 +8,4 @@
 - [x] T6: Animaciones (framer-motion).
 - [x] T7: Build de producción y verificación.
 - [x] T8: Integración real con backend (V2).
+- [x] T9: Voz real (Web Speech API) + responsive mobile + animaciones.

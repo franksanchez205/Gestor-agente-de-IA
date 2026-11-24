@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useVoice } from "./hooks/useVoice";
 
 type Msg = { role: "user" | "agent"; text: string; ts: number };
 type Doc = { doc_type: string; status: string; expires: string | null };
@@ -13,19 +14,24 @@ export default function App() {
   const [msgs, setMsgs] = useState<Msg[]>(seed);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
-  const [listening, setListening] = useState(false);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [credential, setCredential] = useState<string>("");
   const [verifying, setVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState<string>("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const handleVoiceResult = useCallback((text: string) => {
+    send(text);
+  }, []);
+
+  const { listening, supported, start, stop, speak } = useVoice(handleVoiceResult);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, typing]);
 
-  // Cargar expediente dinámico del backend
   useEffect(() => {
     fetch("/api/expediente/")
       .then((r) => r.json())
@@ -50,29 +56,14 @@ export default function App() {
       });
       const data = await res.json();
       await new Promise((r) => setTimeout(r, 600));
-      setMsgs((m) => [
-        ...m,
-        {
-          role: "agent",
-          text:
-            data.status === "ok"
-              ? "Recibí tu solicitud. Estoy preparando el plan del trámite; te confirmo antes de enviar cualquier cosa. ¿Autorizás que gestione por vos?"
-              : "Hubo un problema. Intentá de nuevo.",
-          ts: Date.now(),
-        },
-      ]);
+      const reply =
+        data.status === "ok"
+          ? "Recibí tu solicitud. Estoy preparando el plan del trámite; te confirmo antes de enviar cualquier cosa. ¿Autorizás que gestione por vos?"
+          : "Hubo un problema. Intentá de nuevo.";
+      setMsgs((m) => [...m, { role: "agent", text: reply, ts: Date.now() }]);
+      speak(reply);
     } finally {
       setTyping(false);
-    }
-  }
-
-  function toggleVoice() {
-    setListening((v) => !v);
-    if (!listening) {
-      setTimeout(() => {
-        setListening(false);
-        send("Necesito renovar mi permiso de residencia");
-      }, 1200);
     }
   }
 
@@ -106,10 +97,19 @@ export default function App() {
   }
 
   return (
-    <div className="h-full flex">
+    <div className="h-full flex flex-col md:flex-row">
+      {/* Mobile header */}
+      <header className="md:hidden px-4 py-3 border-b border-line flex items-center justify-between bg-panel/80 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center font-bold text-ink text-sm">P</div>
+          <span className="font-semibold">Puente</span>
+        </div>
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-slate-300 text-xl">☰</button>
+      </header>
+
       {/* Sidebar */}
-      <aside className="hidden md:flex w-72 flex-col border-r border-line bg-panel/60 backdrop-blur">
-        <div className="px-6 py-5 border-b border-line">
+      <aside className={`${sidebarOpen ? "flex" : "hidden"} md:flex w-full md:w-72 flex-col border-r border-line bg-panel/60 backdrop-blur absolute md:relative z-10 h-[calc(100%-56px)] md:h-full`}>
+        <div className="px-6 py-5 border-b border-line hidden md:block">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center font-bold text-ink">
               P
@@ -121,7 +121,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 flex-1 overflow-y-auto">
           <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Expediente</div>
           <div className="space-y-2 text-sm">
             {docs.length === 0 && <div className="text-slate-500 text-xs">Cargando…</div>}
@@ -132,57 +132,61 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          <div className="mt-4 pt-4 border-t border-line">
+            <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Notificaciones</div>
+            {notifs.length === 0 && <div className="text-slate-500 text-xs">Sin notificaciones</div>}
+            {notifs.map((n, i) => (
+              <div key={i} className="text-sm text-slate-300">{n.text}</div>
+            ))}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-line">
+            <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Credenciales verificables</div>
+            <button
+              onClick={issueCredential}
+              className="w-full text-xs px-3 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition mb-2"
+            >
+              Emitir credencial (pasaporte)
+            </button>
+            {credential && (
+              <div className="space-y-2">
+                <div className="text-xs text-slate-400 break-all font-mono bg-ink/50 p-2 rounded">{credential.slice(0, 60)}…</div>
+                <button
+                  onClick={verifyCredential}
+                  disabled={verifying}
+                  className="w-full text-xs px-3 py-2 rounded-lg bg-ok/20 text-ok hover:bg-ok/30 transition"
+                >
+                  {verifying ? "Verificando…" : "Verificar credencial"}
+                </button>
+                {verifyResult && <div className="text-xs text-slate-300">{verifyResult}</div>}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-line">
-          <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Notificaciones</div>
-          {notifs.length === 0 && <div className="text-slate-500 text-xs">Sin notificaciones</div>}
-          {notifs.map((n, i) => (
-            <div key={i} className="text-sm text-slate-300">{n.text}</div>
-          ))}
-        </div>
-
-        <div className="px-6 py-4 border-t border-line">
-          <div className="text-xs uppercase tracking-wider text-slate-500 mb-2">Credenciales verificables</div>
-          <button
-            onClick={issueCredential}
-            className="w-full text-xs px-3 py-2 rounded-lg bg-accent/20 text-accent hover:bg-accent/30 transition mb-2"
-          >
-            Emitir credencial (pasaporte)
-          </button>
-          {credential && (
-            <div className="space-y-2">
-              <div className="text-xs text-slate-400 break-all font-mono bg-ink/50 p-2 rounded">{credential.slice(0, 60)}…</div>
-              <button
-                onClick={verifyCredential}
-                disabled={verifying}
-                className="w-full text-xs px-3 py-2 rounded-lg bg-ok/20 text-ok hover:bg-ok/30 transition"
-              >
-                {verifying ? "Verificando…" : "Verificar credencial"}
-              </button>
-              {verifyResult && <div className="text-xs text-slate-300">{verifyResult}</div>}
-            </div>
-          )}
-        </div>
-
-        <div className="mt-auto px-6 py-4 border-t border-line text-xs text-slate-500 font-mono">
+        <div className="px-6 py-4 border-t border-line text-xs text-slate-500 font-mono">
           un solo interlocutor · todo invisible
         </div>
       </aside>
 
       {/* Main chat */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col min-w-0">
         <header className="px-6 py-4 border-b border-line flex items-center justify-between">
           <div>
             <div className="font-semibold">Conversación</div>
             <div className="text-xs text-slate-400">Agente Puente · WhatsApp / voz / app</div>
           </div>
-          <button
-            onClick={toggleVoice}
-            className={`px-4 py-2 rounded-lg font-medium transition ${listening ? "bg-warn text-ink" : "bg-accent text-ink hover:bg-accent/90"}`}
-          >
-            {listening ? "Escuchando…" : "Hablar"}
-          </button>
+          <div className="flex gap-2">
+            {supported && (
+              <button
+                onClick={listening ? stop : start}
+                className={`px-4 py-2 rounded-lg font-medium transition ${listening ? "bg-warn text-ink animate-pulse" : "bg-accent text-ink hover:bg-accent/90"}`}
+              >
+                {listening ? "Escuchando…" : "Hablar"}
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">

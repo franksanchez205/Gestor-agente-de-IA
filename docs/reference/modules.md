@@ -69,7 +69,7 @@ Marketplace de gestores verificados.
 
 ## src/data/models.py
 
-Modelos SQLAlchemy: `User`, `Document`, `Case`, `Gestor` (V2). `Case` incluye `title` (V2) para identificar el trámite. `Gestor` incluye specialties, verified, reputation_score, cases_completed.
+Modelos SQLAlchemy: `User`, `Document`, `Case`, `Gestor`, `Payment` (V2). `Case` incluye `title` (V2) para identificar el trámite. `Gestor` incluye specialties, verified, reputation_score, cases_completed. `Payment` incluye amount, currency, status (pending/released/refunded), escrow para gestores.
 
 ## src/api/whatsapp.py / voice.py
 

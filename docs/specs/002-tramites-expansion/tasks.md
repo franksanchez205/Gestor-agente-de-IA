@@ -2,7 +2,7 @@
 
 - [x] T1: Extender modelo Case para múltiples trámites + migración.
 - [x] T2: Modelo Gestor + marketplace (find_best, assign, release_payment).
-- [ ] T3: Modelo Payment (escrow) + migración.
+- [x] T3: Modelo Payment (escrow) + migración.
 - [ ] T4: Extender orquestador para múltiples planes activos.
 - [ ] T5: Extender RAG con normativa del segundo país.
 - [ ] T6: Extender portales para el segundo país.

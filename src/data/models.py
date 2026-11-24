@@ -55,3 +55,15 @@ class Gestor(Base):
     reputation_score = Column(Float, default=0.0)
     cases_completed = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class Payment(Base):
+    __tablename__ = "payments"
+    id = Column(String, primary_key=True)
+    case_id = Column(String, ForeignKey("cases.id"), nullable=False)
+    gestor_id = Column(String, ForeignKey("gestores.id"), nullable=True)
+    amount = Column(Float, nullable=False)
+    currency = Column(String, nullable=False, default="USD")
+    status = Column(String, nullable=False, default="pending")  # pending | released | refunded
+    created_at = Column(DateTime, default=datetime.utcnow)
+    released_at = Column(DateTime, nullable=True)

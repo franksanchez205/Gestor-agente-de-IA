@@ -1,0 +1,1 @@
+"""Credenciales verificables (W3C Verifiable Credentials)."""

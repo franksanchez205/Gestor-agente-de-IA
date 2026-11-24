@@ -1,6 +1,6 @@
 # Tasks 004
 
-- [ ] T1: Módulo de credenciales verificables (emisión JWT-VC).
+- [x] T1: Módulo de credenciales verificables (emisión JWT-VC).
 - [ ] T2: Verificador de credenciales (firma + validez).
 - [ ] T3: Modelo Credential + migración.
 - [ ] T4: Control de acceso (compartir/revocar).

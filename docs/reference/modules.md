@@ -81,6 +81,15 @@ Base de conocimiento (RAG) por país.
 
 - `KnowledgeBase`: `search(query, country, top_k)`, `ingest(chunks)`, `countries`, `has_country`.
 
+## src/credentials/vc.py
+
+Credenciales verificables (W3C Verifiable Credentials, JWT-VC).
+
+- `issue_vc(subject_did, claims, issuer_did, secret_key, expires_in_days, algorithm)` → JWT string.
+- `verify_vc(token, secret_key, algorithms)` → payload dict o raise VCError.
+- `is_vc_valid(token, secret_key)` → bool.
+- `VCError`: excepción para credenciales inválidas/expiradas.
+
 ## frontend/
 
 App web React + Vite + Tailwind (puerto 5173).

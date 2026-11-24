@@ -67,3 +67,14 @@ class Payment(Base):
     status = Column(String, nullable=False, default="pending")  # pending | released | refunded
     created_at = Column(DateTime, default=datetime.utcnow)
     released_at = Column(DateTime, nullable=True)
+
+
+class Credential(Base):
+    __tablename__ = "credentials"
+    id = Column(String, primary_key=True)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    doc_id = Column(String, ForeignKey("documents.id"), nullable=True)
+    vc_jwt = Column(String, nullable=False)
+    issued_at = Column(DateTime, default=datetime.utcnow)
+    expires_at = Column(DateTime, nullable=True)
+    revoked = Column(Boolean, default=False)

@@ -93,6 +93,12 @@ Verificador de credenciales con validaciones adicionales.
 
 - `CredentialVerifier`: `verify(token, expected_subject)`, `is_valid(token, expected_subject)`. Valida issuer y subject esperados.
 
+## src/credentials/access.py
+
+Control de acceso a credenciales verificables.
+
+- `CredentialAccess`: `share(credential_id, expires_in_minutes)` → token JWT de acceso temporal. `revoke_share(share_token)` → bool. `check_access(share_token)` → bool. `revoke_credential(credential_id, revoked_set)`.
+
 - `issue_vc(subject_did, claims, issuer_did, secret_key, expires_in_days, algorithm)` → JWT string.
 - `verify_vc(token, secret_key, algorithms)` → payload dict o raise VCError.
 - `is_vc_valid(token, secret_key)` → bool.

@@ -37,4 +37,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/002-tramites-expansion/` — V2: más trámites + segundo país (completada).
 - `docs/specs/003-frontend/` — Frontend innovador estilo Jarvis (completada).
 - `docs/specs/004-verifiable-credentials/` — Credenciales verificables transfronterizas (completada).
-- `docs/specs/005-b2b-ong/` — B2B: ONG y organismos (en progreso).
+- `docs/specs/005-b2b-ong/` — B2B: ONG y organismos (completada).

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVoice } from "./hooks/useVoice";
+import AdminPanel from "./AdminPanel";
+import BeneficiaryActivation from "./BeneficiaryActivation";
 
 type Msg = { role: "user" | "agent"; text: string; ts: number };
 type Doc = { doc_type: string; status: string; expires: string | null };
@@ -20,6 +22,8 @@ export default function App() {
   const [verifying, setVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [activationOpen, setActivationOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const handleVoiceResult = useCallback((text: string) => {
@@ -174,11 +178,23 @@ export default function App() {
       <main className="flex-1 flex flex-col min-w-0">
         <header className="px-6 py-4 border-b border-line flex items-center justify-between">
           <div>
-            <div className="font-semibold">Conversación</div>
+            <div className="font-semibold">{adminOpen ? "Panel de administración" : "Conversación"}</div>
             <div className="text-xs text-slate-400">Agente Puente · WhatsApp / voz / app</div>
           </div>
           <div className="flex gap-2">
-            {supported && (
+            <button
+              onClick={() => setAdminOpen(!adminOpen)}
+              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition"
+            >
+              {adminOpen ? "Chat" : "Admin"}
+            </button>
+            <button
+              onClick={() => setActivationOpen(!activationOpen)}
+              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition"
+            >
+              Cupo
+            </button>
+            {supported && !adminOpen && (
               <button
                 onClick={listening ? stop : start}
                 className={`px-4 py-2 rounded-lg font-medium transition ${listening ? "bg-warn text-ink animate-pulse" : "bg-accent text-ink hover:bg-accent/90"}`}
@@ -189,6 +205,15 @@ export default function App() {
           </div>
         </header>
 
+        {adminOpen ? (
+          <div className="flex-1 overflow-y-auto">
+            <AdminPanel />
+          </div>
+        ) : activationOpen ? (
+          <div className="flex-1 overflow-y-auto">
+            <BeneficiaryActivation onActivated={() => setActivationOpen(false)} />
+          </div>
+        ) : (
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
           <AnimatePresence initial={false}>
             {msgs.map((m) => (
@@ -225,6 +250,7 @@ export default function App() {
           )}
           <div ref={bottomRef} />
         </div>
+        )}
 
         <form
           onSubmit={(e) => {

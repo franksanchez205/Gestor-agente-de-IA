@@ -10,7 +10,14 @@ from typing import Any
 class LLMClient:
     def __init__(self, provider: str = "openai", model: str | None = None, api_key: str | None = None):
         self.provider = provider.lower()
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY") if self.provider == "openai" else os.getenv("ANTHROPIC_API_KEY")
+        if self.provider == "openai":
+            self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        elif self.provider == "anthropic":
+            self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        elif self.provider == "gemini":
+            self.api_key = api_key or os.getenv("GEMINI_API_KEY")
+        else:
+            self.api_key = api_key
         if self.provider == "openai":
             self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
             import openai
@@ -19,6 +26,11 @@ class LLMClient:
             self.model = model or os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
             import anthropic
             self._client = anthropic.AsyncAnthropic(api_key=self.api_key)
+        elif self.provider == "gemini":
+            self.model = model or os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+            import google.generativeai as genai
+            genai.configure(api_key=self.api_key)
+            self._genai = genai
         else:
             raise ValueError(f"Proveedor no soportado: {provider}")
 
@@ -34,7 +46,7 @@ class LLMClient:
                 max_tokens=max_tokens,
             )
             return resp.choices[0].message.content or ""
-        else:
+        elif self.provider == "anthropic":
             kwargs: dict[str, Any] = {
                 "model": self.model,
                 "max_tokens": max_tokens,
@@ -44,3 +56,13 @@ class LLMClient:
                 kwargs["system"] = system
             resp = await self._client.messages.create(**kwargs)
             return resp.content[0].text if resp.content else ""
+        elif self.provider == "gemini":
+            import asyncio
+            model = self._genai.GenerativeModel(self.model)
+            full_prompt = f"{system}\n\n{prompt}" if system else prompt
+            # google-generativeai es sync; ejecutar en thread
+            loop = asyncio.get_event_loop()
+            resp = await loop.run_in_executor(None, lambda: model.generate_content(full_prompt))
+            return resp.text if resp.text else ""
+        else:
+            raise ValueError(f"Proveedor no soportado: {self.provider}")

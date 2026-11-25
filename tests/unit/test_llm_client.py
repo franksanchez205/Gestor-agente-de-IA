@@ -37,4 +37,4 @@ async def test_llm_client_anthropic_complete(monkeypatch):
 
 def test_llm_client_unsupported_provider():
     with pytest.raises(ValueError):
-        LLMClient(provider="gemini")
+        LLMClient(provider="cohere")

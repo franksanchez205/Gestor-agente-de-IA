@@ -14,6 +14,30 @@ router = APIRouter(prefix="/api/chat", tags=["chat"])
 _store = InMemoryVectorStore()
 _kb = KnowledgeBase(vector_store=_store)
 
+# Ingestar normativa de ejemplo para RAG
+from src.knowledge.base import KnowledgeChunk
+
+_kb_ingest_task = None
+try:
+    import asyncio
+
+    async def _ingest():
+        await _kb.ingest([
+            KnowledgeChunk(country="AR", tramite="renovacion", source="Ley 25.871", content="Renovación de permiso de residencia en Argentina: se debe solicitar 60 días antes del vencimiento. Requiere DNI, comprobante de domicilio y foto.", updated_at="2026-01-01"),
+            KnowledgeChunk(country="AR", tramite="apostilla", source="Convención de La Haya", content="Apostilla de documentos en Argentina: se tramita ante el Ministerio de Relaciones Exteriores. Valida para países firmantes de la Convención de La Haya.", updated_at="2026-01-01"),
+            KnowledgeChunk(country="ES", tramite="apostilla", source="Convención de La Haya", content="Apostilla de título universitario en España: se tramita ante el Ministerio de Justicia. El título debe estar previamente legalizado en el país de origen.", updated_at="2026-01-01"),
+            KnowledgeChunk(country="ES", tramite="residencia", source="Ley de Extranjería", content="Permiso de residencia en España: renovación cada 2 años. Requiere pasaporte vigente, seguro médico y medios económicos.", updated_at="2026-01-01"),
+        ])
+
+    # Ejecutar ingesta al importar el módulo
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        asyncio.ensure_future(_ingest())
+    else:
+        loop.run_until_complete(_ingest())
+except Exception:
+    pass
+
 
 class ChatRequest(BaseModel):
     message: str
@@ -28,10 +52,16 @@ class ChatResponse(BaseModel):
 @router.post("/")
 async def chat(req: ChatRequest):
     # Intentar usar LLM real si hay API key
-    api_key = os.getenv("OPENAI_API_KEY")
-    if api_key:
+    # Seleccionar proveedor disponible
+    if os.getenv("OPENAI_API_KEY"):
         from src.agent.llm_client import LLMClient
         llm = LLMClient(provider="openai")
+    elif os.getenv("ANTHROPIC_API_KEY"):
+        from src.agent.llm_client import LLMClient
+        llm = LLMClient(provider="anthropic")
+    elif os.getenv("GEMINI_API_KEY"):
+        from src.agent.llm_client import LLMClient
+        llm = LLMClient(provider="gemini")
     else:
         # Mock LLM para desarrollo sin API key
         class MockLLM:

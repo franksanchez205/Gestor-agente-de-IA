@@ -12,7 +12,7 @@ class LLMClient:
         self.provider = provider.lower()
         self.api_key = api_key or os.getenv("OPENAI_API_KEY") if self.provider == "openai" else os.getenv("ANTHROPIC_API_KEY")
         if self.provider == "openai":
-            self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o")
+            self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
             import openai
             self._client = openai.AsyncOpenAI(api_key=self.api_key)
         elif self.provider == "anthropic":

@@ -1,5 +1,8 @@
 """Punto de entrada de la aplicación FastAPI."""
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from src.api.whatsapp import router as whatsapp_router
 from src.api.voice import router as voice_router

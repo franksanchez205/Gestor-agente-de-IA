@@ -14,6 +14,8 @@ export default function JarvisPanel({ onExit }: { onExit: () => void }) {
   const [pulse, setPulse] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, typing]);
@@ -76,6 +78,10 @@ export default function JarvisPanel({ onExit }: { onExit: () => void }) {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
               <span className="text-emerald-400">ONLINE</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+              <span className="text-cyan-400">LLM: CONECTADO</span>
             </div>
             <div className="text-cyan-500/70">
               {new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
@@ -197,8 +203,9 @@ export default function JarvisPanel({ onExit }: { onExit: () => void }) {
                         {m.text}
                         {m.role === "agent" && m.sources && m.sources.length > 0 && (
                           <div className="mt-2 pt-1 border-t border-cyan-500/10 text-[10px] text-cyan-500/60">
+                            <div className="text-cyan-400/80 mb-1 tracking-wider">FUENTES RAG:</div>
                             {m.sources.map((s, i) => (
-                              <div key={i}>▸ {s}</div>
+                              <div key={i} className="text-cyan-500/60">▸ {s}</div>
                             ))}
                           </div>
                         )}

@@ -45,3 +45,6 @@ htmlcov/
 
 # Skill registry
 .atl/
+
+# SQLite dev DB
+*.db

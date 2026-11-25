@@ -7,7 +7,7 @@
   - /src/api: canales de interacción (WhatsApp, voz)
   - /src/knowledge: base de normativa migratoria por país (RAG)
   - /src/main.py: punto de entrada FastAPI (puerto 8000)
-- /frontend: app web React + Vite + Tailwind (puerto 5173). Diseño distintivo estilo Jarvis.
+- /frontend: app web React + Vite + Tailwind (puerto 5173). Diseño distintivo estilo Jarvis. Incluye panel Jarvis (estilo Iron Man) con sistema de métricas, ondas de voz, expediente y chat.
 - /docs/specs: specs numeradas (000-setup, 001-..., 002-..., 003-frontend)
 - /tests: pruebas unitarias e integración
 - Docker Compose: PostgreSQL (5433) + Redis (6379) + app (8000)

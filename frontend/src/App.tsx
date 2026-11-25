@@ -4,6 +4,7 @@ import { useVoice } from "./hooks/useVoice";
 import { getToken, clearToken, getUser, isAuthenticated } from "./auth";
 import AdminPanel from "./AdminPanel";
 import BeneficiaryActivation from "./BeneficiaryActivation";
+import JarvisPanel from "./JarvisPanel";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
@@ -43,6 +44,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [activationOpen, setActivationOpen] = useState(false);
+  const [jarvisMode, setJarvisMode] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const user = getUser();
 
@@ -152,6 +154,10 @@ export default function App() {
         </div>
       </div>
     );
+  }
+
+  if (jarvisMode) {
+    return <JarvisPanel onExit={() => setJarvisMode(false)} />;
   }
 
   return (
@@ -271,6 +277,12 @@ export default function App() {
             <div className="text-xs text-slate-400">Agente Puente · WhatsApp / voz / app</div>
           </div>
           <div className="flex gap-2">
+            <button
+              onClick={() => setJarvisMode(true)}
+              className="px-3 py-2 rounded-lg text-sm bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 hover:bg-cyan-500/30 transition-colors"
+            >
+              Jarvis
+            </button>
             <button
               onClick={() => setAdminOpen(!adminOpen)}
               className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition-colors"

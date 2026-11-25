@@ -4,10 +4,14 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg2://puente:puente@localhost:5433/puente")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./puente.db")
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Crear tablas si no existen (desarrollo)
+from src.data.models import Base
+Base.metadata.create_all(bind=engine)
 
 
 def get_db():

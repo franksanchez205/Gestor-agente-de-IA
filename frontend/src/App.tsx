@@ -162,7 +162,7 @@ export default function App() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center font-bold text-ink text-sm">P</div>
           <span className="font-semibold">Puente</span>
         </div>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-slate-300 text-xl">☰</button>
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Abrir menú" className="text-slate-300 text-xl focus-visible:ring-2 focus-visible:ring-accent">☰</button>
       </header>
 
       {/* Sidebar */}
@@ -197,7 +197,7 @@ export default function App() {
                   className="flex items-center justify-between py-1.5"
                 >
                   <span className="flex items-center gap-2 text-sm text-slate-300">
-                    <span>{docIcons[d.doc_type] || "📄"}</span>
+                    <span aria-hidden="true">{docIcons[d.doc_type] || "📄"}</span>
                     <span>{docLabels[d.doc_type] || d.doc_type}</span>
                   </span>
                   <span className={`text-xs font-mono ${docColor(d.status)}`}>{d.status}</span>
@@ -233,7 +233,7 @@ export default function App() {
             </div>
             <button
               onClick={issueCredential}
-              className="w-full text-xs px-3 py-2 rounded-lg bg-accent/15 text-accent hover:bg-accent/25 transition mb-2 border border-accent/20"
+              className="w-full text-xs px-3 py-2 rounded-lg bg-accent/15 text-accent hover:bg-accent/25 transition-colors mb-2 border border-accent/20"
             >
               Emitir credencial (pasaporte)
             </button>
@@ -245,7 +245,7 @@ export default function App() {
                 <button
                   onClick={verifyCredential}
                   disabled={verifying}
-                  className="w-full text-xs px-3 py-2 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition border border-emerald-500/20 disabled:opacity-50"
+                  className="w-full text-xs px-3 py-2 rounded-lg bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-colors border border-emerald-500/20 disabled:opacity-50"
                 >
                   {verifying ? "Verificando…" : "Verificar credencial"}
                 </button>
@@ -273,20 +273,20 @@ export default function App() {
           <div className="flex gap-2">
             <button
               onClick={() => setAdminOpen(!adminOpen)}
-              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition"
+              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition-colors"
             >
               {adminOpen ? "Chat" : "Admin"}
             </button>
             <button
               onClick={() => setActivationOpen(!activationOpen)}
-              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition"
+              className="px-3 py-2 rounded-lg text-sm bg-panel border border-line hover:bg-line/50 transition-colors"
             >
               Cupo
             </button>
             {supported && !adminOpen && !activationOpen && (
               <button
                 onClick={listening ? stop : start}
-                className={`px-4 py-2 rounded-lg font-medium transition ${listening ? "bg-amber-500 text-ink animate-pulse" : "bg-accent text-ink hover:bg-accent/90"}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${listening ? "bg-amber-500 text-ink animate-pulse" : "bg-accent text-ink hover:bg-accent/90"}`}
               >
                 {listening ? "Escuchando…" : "Hablar"}
               </button>
@@ -360,11 +360,11 @@ export default function App() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Escribí tu mensaje…"
-            className="flex-1 bg-ink border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition"
+            className="flex-1 bg-ink border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors"
           />
           <button
             type="submit"
-            className="px-5 py-3 rounded-xl bg-accent text-ink font-medium hover:bg-accent/90 transition shadow-lg shadow-accent/20"
+            className="px-5 py-3 rounded-xl bg-accent text-ink font-medium hover:bg-accent/90 transition-colors shadow-lg shadow-accent/20"
           >
             Enviar
           </button>

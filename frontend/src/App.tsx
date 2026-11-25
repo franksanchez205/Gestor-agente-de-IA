@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVoice } from "./hooks/useVoice";
+import { getToken, clearToken, getUser, isAuthenticated } from "./auth";
 import AdminPanel from "./AdminPanel";
 import BeneficiaryActivation from "./BeneficiaryActivation";
+import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
 
 type Msg = { role: "user" | "agent"; text: string; ts: number; sources?: string[] };
 type Doc = { doc_type: string; status: string; expires: string | null };
@@ -13,6 +16,8 @@ const seed: Msg[] = [
 ];
 
 export default function App() {
+  const [authenticated, setAuthenticated] = useState(isAuthenticated());
+  const [showRegister, setShowRegister] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>(seed);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -25,6 +30,7 @@ export default function App() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [activationOpen, setActivationOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const user = getUser();
 
   const handleVoiceResult = useCallback((text: string) => {
     send(text);
@@ -37,14 +43,17 @@ export default function App() {
   }, [msgs, typing]);
 
   useEffect(() => {
-    fetch("/api/expediente/")
+    if (!authenticated) return;
+    fetch("/api/expediente/", {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
       .then((r) => r.json())
       .then((data) => {
         setDocs(data.documents || []);
         setNotifs(data.notifications || []);
       })
       .catch(() => {});
-  }, []);
+  }, [authenticated]);
 
   async function send(text: string) {
     const t = text.trim();
@@ -55,7 +64,10 @@ export default function App() {
     try {
       const res = await fetch("/api/chat/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
         body: JSON.stringify({ message: t }),
       });
       const data = await res.json();
@@ -77,7 +89,10 @@ export default function App() {
   async function issueCredential() {
     const res = await fetch("/api/credentials/issue", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
       body: JSON.stringify({ subject_did: "did:example:user1", doc_type: "passport", issued_by: "AR" }),
     });
     const data = await res.json();
@@ -97,10 +112,32 @@ export default function App() {
     setVerifying(false);
   }
 
+  function handleLogout() {
+    clearToken();
+    setAuthenticated(false);
+    setMsgs(seed);
+  }
+
   function docColor(status: string) {
     if (status.startsWith("vence")) return "text-warn";
     if (status === "válido" || status === "apostillado") return "text-ok";
     return "text-slate-400";
+  }
+
+  // Auth gate
+  if (!authenticated) {
+    return showRegister ? (
+      <RegisterForm onRegister={() => setAuthenticated(true)} />
+    ) : (
+      <div>
+        <LoginForm onLogin={() => setAuthenticated(true)} />
+        <div className="text-center mt-4">
+          <button onClick={() => setShowRegister(true)} className="text-sm text-accent hover:underline">
+            ¿No tenés cuenta? Registrate
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -172,8 +209,11 @@ export default function App() {
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-line text-xs text-slate-500 font-mono">
-          un solo interlocutor · todo invisible
+        <div className="px-6 py-4 border-t border-line">
+          <div className="text-xs text-slate-400 mb-2">{user?.user_id || "Usuario"}</div>
+          <button onClick={handleLogout} className="text-xs text-red-400 hover:underline">
+            Cerrar sesión
+          </button>
         </div>
       </aside>
 
@@ -181,7 +221,7 @@ export default function App() {
       <main className="flex-1 flex flex-col min-w-0">
         <header className="px-6 py-4 border-b border-line flex items-center justify-between">
           <div>
-            <div className="font-semibold">{adminOpen ? "Panel de administración" : "Conversación"}</div>
+            <div className="font-semibold">Conversación</div>
             <div className="text-xs text-slate-400">Agente Puente · WhatsApp / voz / app</div>
           </div>
           <div className="flex gap-2">
@@ -197,7 +237,7 @@ export default function App() {
             >
               Cupo
             </button>
-            {supported && !adminOpen && (
+            {supported && !adminOpen && !activationOpen && (
               <button
                 onClick={listening ? stop : start}
                 className={`px-4 py-2 rounded-lg font-medium transition ${listening ? "bg-warn text-ink animate-pulse" : "bg-accent text-ink hover:bg-accent/90"}`}

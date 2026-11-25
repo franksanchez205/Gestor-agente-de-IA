@@ -40,3 +40,4 @@ Ver `docs/specs/001-tramite/tasks.md` para el detalle.
 - `docs/specs/005-b2b-ong/` — B2B: ONG y organismos (completada).
 - `docs/specs/006-llm-integration/` — Integración LLM real (completada).
 - `docs/specs/007-auth-users/` — Autenticación y usuarios (completada).
+- `docs/specs/008-llm-frontend/` — Integración LLM en frontend (en progreso).

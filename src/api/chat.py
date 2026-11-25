@@ -1,7 +1,7 @@
 """API de chat con el agente (integración LLM real)."""
 
 import os
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from src.agent.reasoning import ReasoningEngine
@@ -71,5 +71,8 @@ async def chat(req: ChatRequest):
         llm = MockLLM()
 
     engine = ReasoningEngine(llm_client=llm, knowledge_base=_kb)
-    result = await engine.understand(req.message, memory_context="Cliente: Juan", country=req.country)
-    return ChatResponse(answer=result.answer, sources=result.sources)
+    try:
+        result = await engine.understand(req.message, memory_context="Cliente: Juan", country=req.country)
+        return ChatResponse(answer=result.answer, sources=result.sources)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))

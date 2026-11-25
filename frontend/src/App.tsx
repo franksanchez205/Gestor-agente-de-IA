@@ -4,7 +4,7 @@ import { useVoice } from "./hooks/useVoice";
 import AdminPanel from "./AdminPanel";
 import BeneficiaryActivation from "./BeneficiaryActivation";
 
-type Msg = { role: "user" | "agent"; text: string; ts: number };
+type Msg = { role: "user" | "agent"; text: string; ts: number; sources?: string[] };
 type Doc = { doc_type: string; status: string; expires: string | null };
 type Notif = { text: string };
 
@@ -60,8 +60,14 @@ export default function App() {
       });
       const data = await res.json();
       await new Promise((r) => setTimeout(r, 600));
+      if (!res.ok) {
+        const reply = "Hubo un problema al contactar al agente. Intentá de nuevo.";
+        setMsgs((m) => [...m, { role: "agent", text: reply, ts: Date.now() }]);
+        speak(reply);
+        return;
+      }
       const reply = data.answer || "Hubo un problema. Intentá de nuevo.";
-      setMsgs((m) => [...m, { role: "agent", text: reply, ts: Date.now() }]);
+      setMsgs((m) => [...m, { role: "agent", text: reply, ts: Date.now(), sources: data.sources || [] }]);
       speak(reply);
     } finally {
       setTyping(false);
@@ -229,6 +235,14 @@ export default function App() {
                   }`}
                 >
                   {m.text}
+                  {m.role === "agent" && m.sources && m.sources.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-line/50 text-xs text-slate-400">
+                      <div className="font-mono mb-1">Fuentes:</div>
+                      {m.sources.map((s, i) => (
+                        <div key={i} className="text-slate-500">• {s}</div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
